@@ -7,7 +7,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=web \
     && rm -f /etc/cron.daily/apt-compat \
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && apt-get update \
-    && apt-get install -y --no-install-recommends wget \
+    && apt-get install -y --no-install-recommends wget ca-certificates \
     && echo "no" | dpkg-reconfigure dash \
     && rm -rf /var/lib/apt/lists/*
 
