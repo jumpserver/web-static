@@ -11,6 +11,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=web \
     && echo "no" | dpkg-reconfigure dash \
     && rm -rf /var/lib/apt/lists/*
 
+ARG DOWNLOAD_URL=https://download.jumpserver.org
+
 WORKDIR /opt/download/applets
 
 ARG PYTHON_VERSION=3.11.6
