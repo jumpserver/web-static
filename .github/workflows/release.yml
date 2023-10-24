@@ -1,0 +1,35 @@
+on:
+
+  push:
+    branches:
+      - master
+
+name: Checkout and Create Release Version
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Get version
+        id: get-version
+        run: |
+          version=$(cat VERSION)
+          echo "version=${version}" >> $GITHUB_OUTPUT
+
+      - name: Create Tag
+        run: |
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git tag -a ${{ steps.get-version.outputs.version }} -m "Release Version ${{ steps.get-version.outputs.version }}"
+          git push origin ${{ steps.get-version.outputs.version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        run: |
+          gh release create ${{ steps.get-version.outputs.version }} --notes "Release ${{ steps.get-version.outputs.version }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
