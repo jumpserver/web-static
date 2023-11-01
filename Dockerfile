@@ -1,6 +1,8 @@
 FROM debian:bullseye-slim
 ARG TARGETARCH
 
+LABEL org.opencontainers.image.source https://github.com/jumpserver/web-static
+
 ARG APT_MIRROR=http://mirrors.ustc.edu.cn
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=web \
     sed -i "s@http://.*.debian.org@${APT_MIRROR}@g" /etc/apt/sources.list \
@@ -19,9 +21,10 @@ ARG PYTHON_VERSION=3.11.6
 RUN set -ex \
     && wget -q https://www.python.org/ftp/python/${PYTHON_VERSION}/python-${PYTHON_VERSION}-amd64.exe
 
-ARG CHROME_VERSION=114.0.5735.134
+ARG CHROME_VERSION=118.0.5993.118
+ARG CHROME_DRIVER_VERSION=118.0.5993.70
 RUN set -ex \
-    && wget -q https://github.com/wojiushixiaobai/Chrome-Portable-Win64/releases/download/${CHROME_VERSION}/chromedriver_win32.zip \
+    && wget -q https://github.com/wojiushixiaobai/Chrome-Portable-Win64/releases/download/${CHROME_DRIVER_VERSION}/chromedriver-win64.zip \
     && wget -q https://github.com/wojiushixiaobai/Chrome-Portable-Win64/releases/download/${CHROME_VERSION}/chrome-win.zip
 
 ARG DBEAVER_VERSION=22.3.4
