@@ -14,6 +14,13 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=web \
     && rm -rf /var/lib/apt/lists/*
 
 ARG DOWNLOAD_URL=https://download.jumpserver.org
+ARG PLAY_VERSION=1.1.0-1
+
+WORKDIR /opt/player
+RUN set -ex \
+    && wget -q ${DOWNLOAD_URL}/public/glyptodon-enterprise-player-${PLAY_VERSION}.tar.gz \
+    && tar -xf glyptodon-enterprise-player-${PLAY_VERSION}.tar.gz -C /opt/player --strip-components 1 \
+    && rm -f glyptodon-enterprise-player-${PLAY_VERSION}.tar.gz
 
 WORKDIR /opt/download/applets
 
