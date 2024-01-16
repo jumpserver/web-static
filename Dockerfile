@@ -31,8 +31,8 @@ RUN set -ex \
 ARG CHROME_VERSION=118.0.5993.118
 ARG CHROME_DRIVER_VERSION=118.0.5993.70
 RUN set -ex \
-    && wget -q https://github.com/wojiushixiaobai/Chrome-Portable-Win64/releases/download/${CHROME_DRIVER_VERSION}/chromedriver-win64.zip \
-    && wget -q https://github.com/wojiushixiaobai/Chrome-Portable-Win64/releases/download/${CHROME_VERSION}/chrome-win.zip
+    && wget -q https://github.com/jumpserver-dev/Chrome-Portable-Win64/releases/download/${CHROME_DRIVER_VERSION}/chromedriver-win64.zip \
+    && wget -q https://github.com/jumpserver-dev/Chrome-Portable-Win64/releases/download/${CHROME_VERSION}/chrome-win.zip
 
 ARG DBEAVER_VERSION=22.3.4
 RUN set -ex \
