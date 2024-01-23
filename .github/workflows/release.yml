@@ -9,6 +9,9 @@ name: Checkout and Create Release Version
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -60,3 +63,5 @@ jobs:
           tags: |
             jumpserver/web-static:${{ steps.get-version.outputs.version }}-bookworm
             ghcr.io/jumpserver/web-static:${{ steps.get-version.outputs.version }}-bookworm
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
