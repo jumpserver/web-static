@@ -32,7 +32,7 @@ RUN set -ex \
 
 ARG DBEAVER_VERSION=22.3.4
 RUN set -ex \
-    && wget -q ${DOWNLOAD_URL}/public/dbeaver-ce-${DBEAVER_VERSION}-x86_64-setup.exe \
+    && wget -q https://dbeaver.io/files/${DBEAVER_VERSION}/dbeaver-ce-${DBEAVER_VERSION}-x86_64-setup.exe \
     && wget -qO dbeaver-patch.msi ${DOWNLOAD_URL}/public/dbeaver-patch-${DBEAVER_VERSION}-x86_64-setup.msi
 
 ARG TINKER_VERSION=v0.1.4

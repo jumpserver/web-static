@@ -23,14 +23,14 @@ jobs:
         run: |
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          git tag -a ${{ steps.get-version.outputs.version }} -m "Release Version ${{ steps.get-version.outputs.version }}"
-          git push origin ${{ steps.get-version.outputs.version }}
+          git tag -a ${{ steps.get-version.outputs.version }} -m "Release Version ${{ steps.get-version.outputs.version }}" || echo "Tag already exists"
+          git push origin ${{ steps.get-version.outputs.version }} || echo "Tag already exists"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
         run: |
-          gh release create ${{ steps.get-version.outputs.version }} --notes "Release ${{ steps.get-version.outputs.version }}"
+          gh release create ${{ steps.get-version.outputs.version }} --notes "Release ${{ steps.get-version.outputs.version }}" || echo "Release already exists"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
