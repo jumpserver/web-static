@@ -63,5 +63,6 @@ jobs:
           tags: |
             jumpserver/web-static:${{ steps.get-version.outputs.version }}-bookworm
             ghcr.io/jumpserver/web-static:${{ steps.get-version.outputs.version }}-bookworm
+          outputs: type=image,oci-mediatypes=true,compression=zstd,compression-level=3,force-compression=true
           cache-from: type=gha
           cache-to: type=gha,mode=max
