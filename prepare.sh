@@ -20,7 +20,7 @@ cd ${PROJECT_DIR} || exit 1
 mkdir -p ${PROJECT_DIR}/opt/player
 cd ${PROJECT_DIR}/opt/player
 wget -q ${DOWNLOAD_URL}/public/glyptodon-enterprise-player-${PLAY_VERSION}.tar.gz
-tar -xf glyptodon-enterprise-player-${PLAY_VERSION}.tar.gz -C /opt/player --strip-components 1
+tar -xf glyptodon-enterprise-player-${PLAY_VERSION}.tar.gz -C ${PROJECT_DIR}/opt/player --strip-components 1
 rm -f glyptodon-enterprise-player-${PLAY_VERSION}.tar.gz
 
 mkdir -p ${PROJECT_DIR}/opt/download/applets
