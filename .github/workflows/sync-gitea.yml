@@ -30,7 +30,7 @@ jobs:
       - name: Sync to Gitea Repository
         run: |
           ssh -o StrictHostKeyChecking=no git@gitea.com || echo ""
-          rm -rf .git
+          rm -rf .git || echo ""
           git clone --depth=1 git@gitea.com:${{ github.repository }}.git web-static
           mv opt/* web-static/
           git add .
