@@ -80,7 +80,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no git@gitea.com || echo ""
           rm -rf .git
-          git clone --depth=1 git@${{ github.repository }}.git
+          git clone --depth=1 git@gitea.com:${{ github.repository }}.git
           mv opt/* web-static/
           git add .
           git commit -m "Release Version ${{ steps.get-version.outputs.version }}"
