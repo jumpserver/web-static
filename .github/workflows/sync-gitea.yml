@@ -1,0 +1,42 @@
+name: Sync Gitea Repository
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Build Version'
+        required: true
+        default: 'v1.1.1'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Prepare files
+        run: |
+          bash prepare.sh
+
+      - name: Set git config
+        run: |
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
+      - name: Setup Gitea Private Key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      
+      - name: Sync to Gitea Repository
+        run: |
+          ssh -o StrictHostKeyChecking=no git@gitea.com || echo ""
+          rm -rf .git || echo ""
+          git clone --depth=1 git@gitea.com:jumpserver/web-static.git
+          mv opt/* web-static/
+          cd web-static
+          git add .
+          git commit -m "Release Version ${{ github.event.inputs.version }}"
+          git tag -a ${{ github.event.inputs.version }} -m "Release Version ${{ github.event.inputs.version }}"
+          git push origin ${{ github.event.inputs.version }} --force
