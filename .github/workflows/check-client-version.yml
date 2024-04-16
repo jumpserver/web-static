@@ -1,0 +1,33 @@
+on:
+  schedule:
+    - cron: '0 1 * * *'
+
+name: Client for Latest Release Version
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: dev
+
+      - name: Check Client Version
+        run: |
+          version=$(curl -s https://api.github.com/repos/jumpserver/clients/releases/latest | jq -r .tag_name)
+          echo "version=${version}" >> $GITHUB_ENV
+          sed -i "s/Client_VERSION=.*/Client_VERSION=${version}/g" prepare.sh
+          git diff --exit-code || echo "need_update=1" >> $GITHUB_ENV
+          git checkout -b pr@dev@upgrade_client_${version}
+
+      - name: Update Client Version
+        if: env.need_update == '1'
+        run: |
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git add .
+          git commit -m "Update Client Version to ${{ env.version }}"
+          git push origin pr@dev@upgrade_client_${{ env.version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
