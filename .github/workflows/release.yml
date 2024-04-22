@@ -27,7 +27,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      
+
       - name: Login to FIT2CLOUD Container Registry
         uses: docker/login-action@v3
         with:
@@ -60,7 +60,7 @@ jobs:
           outputs: type=image,oci-mediatypes=true,compression=zstd,compression-level=3,force-compression=true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      
+
       - name: Create Tag
         run: |
           git config --global user.name "${GITHUB_ACTOR}"
@@ -75,16 +75,21 @@ jobs:
           gh release create ${{ steps.get-version.outputs.version }} --notes "Release ${{ steps.get-version.outputs.version }}" || echo "Release already exists"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Setup Gitea Private Key
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      
+
+      - name: Get pip_package.zip
+        run: |
+          applets_version=$(curl -s https://api.github.com/repos/jumpserver/applets/releases/latest | grep "tag_name" | awk '{print $2}' | sed 's/"//g' | sed 's/,//g')
+          wget -qO opt/download/applets/pip_packages.zip https://github.com/jumpserver/applets/releases/download/${applets_version}/pip_packages.zip
+
       - name: Sync to Gitea Repository
         run: |
           ssh -o StrictHostKeyChecking=no git@gitea.com || echo ""
-          rm -rf .git || echo ""
+          rm -rf .git opt/player || echo ""
           git clone --depth=1 git@gitea.com:jumpserver/web-static.git
           mv opt/* web-static/
           cd web-static
