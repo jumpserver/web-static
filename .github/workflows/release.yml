@@ -45,6 +45,11 @@ jobs:
       - name: Prepare files
         run: |
           bash prepare.sh
+      
+      - name: Get pip_package.zip
+        run: |
+          applets_version=$(curl -s https://api.github.com/repos/jumpserver/applets/releases/latest | grep "tag_name" | awk '{print $2}' | sed 's/"//g' | sed 's/,//g')
+          wget -qO opt/download/applets/pip_packages.zip https://github.com/jumpserver/applets/releases/download/${applets_version}/pip_packages.zip
 
       - name: Build and push
         uses: docker/build-push-action@v3
@@ -84,7 +89,7 @@ jobs:
       - name: Sync to Gitea Repository
         run: |
           ssh -o StrictHostKeyChecking=no git@gitea.com || echo ""
-          rm -rf .git || echo ""
+          rm -rf .git opt/player || echo ""
           git clone --depth=1 git@gitea.com:jumpserver/web-static.git
           mv opt/* web-static/
           cd web-static
