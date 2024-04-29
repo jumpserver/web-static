@@ -95,4 +95,5 @@ jobs:
       - name: Upload Assets to OSS
         run: |
           ossutil mkdir oss://jms-pkg/jumpserver/web-static/releases/download/${{ steps.get-version.outputs.version }}/ || echo "Path already exists"
-          ossutil cp -r opt/ oss://jms-pkg/jumpserver/web-static/releases/download/${{ steps.get-version.outputs.version }}/ --update
+          ossutil cp -r opt/download/applets/ oss://jms-pkg/jumpserver/web-static/releases/download/${{ steps.get-version.outputs.version }}/ --update
+          ossutil cp -r opt/download/public/ oss://jms-pkg/jumpserver/web-static/releases/download/${{ steps.get-version.outputs.version }}/ --update
