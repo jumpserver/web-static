@@ -4,7 +4,7 @@ on:
     branches:
       - pr@*
       - repr@*
-      - dev
+      - v3
 
 jobs:
   build:
