@@ -21,6 +21,7 @@ jobs:
 
       - name: Get pip_package.zip
         run: |
+          rm -rf opt/player || echo ""
           applets_version=$(curl -s https://api.github.com/repos/jumpserver/applets/releases/latest | grep "tag_name" | awk '{print $2}' | sed 's/"//g' | sed 's/,//g')
           wget -qO opt/download/applets/pip_packages.zip https://github.com/jumpserver/applets/releases/download/${applets_version}/pip_packages.zip
 
@@ -57,4 +58,5 @@ jobs:
       - name: Upload Assets to OSS
         run: |
           ossutil mkdir oss://jms-pkg/jumpserver/web-static/releases/download/${{ steps.get-version.outputs.version }}/ || echo "Path already exists"
-          ossutil cp -r opt/ oss://jms-pkg/jumpserver/web-static/releases/download/${{ steps.get-version.outputs.version }}/ --update
+          ossutil cp -r opt/download/applets/ oss://jms-pkg/jumpserver/web-static/releases/download/${{ steps.get-version.outputs.version }}/ --update
+          ossutil cp -r opt/download/public/ oss://jms-pkg/jumpserver/web-static/releases/download/${{ steps.get-version.outputs.version }}/ --update
