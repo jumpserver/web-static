@@ -60,6 +60,12 @@ jobs:
           outputs: type=image,oci-mediatypes=true,compression=zstd,compression-level=3,force-compression=true
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      
+      - name: Get pip_package.zip
+        run: |
+          rm -rf opt/player || echo ""
+          applets_version=$(curl -s https://api.github.com/repos/jumpserver/applets/releases/latest | grep "tag_name" | awk '{print $2}' | sed 's/"//g' | sed 's/,//g')
+          wget -qO opt/download/applets/pip_packages.zip https://github.com/jumpserver/applets/releases/download/${applets_version}/pip_packages.zip
 
       - name: Create Tag
         run: |
@@ -73,30 +79,10 @@ jobs:
       - name: Create Release
         run: |
           gh release create ${{ steps.get-version.outputs.version }} --notes "Release ${{ steps.get-version.outputs.version }}" || echo "Release already exists"
+          gh release upload ${{ steps.get-version.outputs.version }} opt/download/applets/* --clobber
+          gh release upload ${{ steps.get-version.outputs.version }} opt/download/public/* --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Setup Private Key
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Get pip_package.zip
-        run: |
-          applets_version=$(curl -s https://api.github.com/repos/jumpserver/applets/releases/latest | grep "tag_name" | awk '{print $2}' | sed 's/"//g' | sed 's/,//g')
-          wget -qO opt/download/applets/pip_packages.zip https://github.com/jumpserver/applets/releases/download/${applets_version}/pip_packages.zip
-
-      - name: Sync to Repository
-        run: |
-          ssh -o StrictHostKeyChecking=no git@github.com || echo ""
-          rm -rf .git opt/player || echo ""
-          git clone --depth=1 git@github.com:jumpserver-dev/web-static.git
-          \cp -rf opt/* web-static/
-          cd web-static
-          git add .
-          git commit -m "Release Version ${{ steps.get-version.outputs.version }}"
-          git tag -a ${{ steps.get-version.outputs.version }} -m "Release Version ${{ steps.get-version.outputs.version }}"
-          git push origin ${{ steps.get-version.outputs.version }} || echo "Tag already exists"
 
       - name: Setup OSSUTIL
         uses: yizhoumo/setup-ossutil@v2
@@ -104,9 +90,9 @@ jobs:
           endpoint: ${{ secrets.OSS_ENDPOINT }}
           access-key-id: ${{ secrets.OSS_ACCESS_KEY_ID }}
           access-key-secret: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
-          ossutil-version: '1.7.14'
+          ossutil-version: 'latest'
       
       - name: Upload Assets to OSS
         run: |
-          ossutil mkdir oss://jms-pkg/jumpserver/web-static/raw/tag/${{ steps.get-version.outputs.version }}/ || echo "Path already exists"
-          ossutil cp -r opt/ oss://jms-pkg/jumpserver/web-static/raw/tag/${{ steps.get-version.outputs.version }}/ --update
+          ossutil mkdir oss://jms-pkg/jumpserver/web-static/releases/download/${{ steps.get-version.outputs.version }}/ || echo "Path already exists"
+          ossutil cp -r opt/ oss://jms-pkg/jumpserver/web-static/releases/download/${{ steps.get-version.outputs.version }}/ --update
