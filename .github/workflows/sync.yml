@@ -1,4 +1,4 @@
-name: Sync Gitea Repository
+name: Sync Repository
 
 on:
   workflow_dispatch:
@@ -29,19 +29,32 @@ jobs:
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 
-      - name: Setup Gitea Private Key
+      - name: Setup Private Key
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       
-      - name: Sync to Gitea Repository
+      - name: Sync to Repository
         run: |
-          ssh -o StrictHostKeyChecking=no git@gitea.com || echo ""
+          ssh -o StrictHostKeyChecking=no git@github.com || echo ""
           rm -rf .git opt/player || echo ""
-          git clone --depth=1 git@gitea.com:jumpserver/web-static.git
+          git clone --depth=1 git@github.com:jumpserver-dev/web-static.git
           mv opt/* web-static/
           cd web-static
           git add .
           git commit -m "Release Version ${{ github.event.inputs.version }}"
           git tag -a ${{ github.event.inputs.version }} -m "Release Version ${{ github.event.inputs.version }}"
           git push origin ${{ github.event.inputs.version }} --force
+      
+      - name: Setup OSSUTIL
+        uses: yizhoumo/setup-ossutil@v2
+        with:
+          endpoint: ${{ secrets.OSS_ENDPOINT }}
+          access-key-id: ${{ secrets.OSS_ACCESS_KEY_ID }}
+          access-key-secret: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+          ossutil-version: '1.7.14'
+      
+      - name: Upload Assets to OSS
+        run: |
+          ossutil mkdir oss://jms-pkg/jumpserver/web-static/raw/tag/${{ steps.get-version.outputs.version }}/ || echo "Path already exists"
+          ossutil cp -r opt/ oss://jms-pkg/jumpserver/web-static/raw/tag/${{ steps.get-version.outputs.version }}/ --update

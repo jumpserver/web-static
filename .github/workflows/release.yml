@@ -76,7 +76,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Gitea Private Key
+      - name: Setup Private Key
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -86,14 +86,27 @@ jobs:
           applets_version=$(curl -s https://api.github.com/repos/jumpserver/applets/releases/latest | grep "tag_name" | awk '{print $2}' | sed 's/"//g' | sed 's/,//g')
           wget -qO opt/download/applets/pip_packages.zip https://github.com/jumpserver/applets/releases/download/${applets_version}/pip_packages.zip
 
-      - name: Sync to Gitea Repository
+      - name: Sync to Repository
         run: |
-          ssh -o StrictHostKeyChecking=no git@gitea.com || echo ""
+          ssh -o StrictHostKeyChecking=no git@github.com || echo ""
           rm -rf .git opt/player || echo ""
-          git clone --depth=1 git@gitea.com:jumpserver/web-static.git
-          mv opt/* web-static/
+          git clone --depth=1 git@github.com:jumpserver-dev/web-static.git
+          \cp -rf opt/* web-static/
           cd web-static
           git add .
           git commit -m "Release Version ${{ steps.get-version.outputs.version }}"
           git tag -a ${{ steps.get-version.outputs.version }} -m "Release Version ${{ steps.get-version.outputs.version }}"
           git push origin ${{ steps.get-version.outputs.version }} || echo "Tag already exists"
+
+      - name: Setup OSSUTIL
+        uses: yizhoumo/setup-ossutil@v2
+        with:
+          endpoint: ${{ secrets.OSS_ENDPOINT }}
+          access-key-id: ${{ secrets.OSS_ACCESS_KEY_ID }}
+          access-key-secret: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+          ossutil-version: '1.7.14'
+      
+      - name: Upload Assets to OSS
+        run: |
+          ossutil mkdir oss://jms-pkg/jumpserver/web-static/raw/tag/${{ steps.get-version.outputs.version }}/ || echo "Path already exists"
+          ossutil cp -r opt/ oss://jms-pkg/jumpserver/web-static/raw/tag/${{ steps.get-version.outputs.version }}/ --update
