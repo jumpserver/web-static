@@ -11,6 +11,7 @@ MRD_VERSION=10.6.7
 VIDEO_PLAYER_VERSION=0.1.9
 OPENSSH_VERSION=v9.4.0.0
 Client_VERSION=v2.1.3
+MONGOSH_VERSION=2.2.12
 
 DOWNLOAD_URL=https://download.jumpserver.org
 
@@ -48,3 +49,9 @@ wget --no-clobber https://github.com/jumpserver/clients/releases/download/${Clie
 wget --no-clobber https://github.com/jumpserver/clients/releases/download/${Client_VERSION}/JumpServer-Client-Installer-mac-${Client_VERSION}-arm64.dmg
 wget --no-clobber https://github.com/jumpserver/clients/releases/download/${Client_VERSION}/JumpServer-Client-Installer-linux-${Client_VERSION}-amd64.deb
 wget --no-clobber https://github.com/jumpserver/clients/releases/download/${Client_VERSION}/JumpServer-Client-Installer-linux-${Client_VERSION}-arm64.deb
+
+if [ "${USE_XPACK}" = "0" ]; then
+    for arch in x64 arm64 ppc64le s390x; do
+        wget --no-clobber https://downloads.mongodb.com/compass/mongosh-${MONGOSH_VERSION}-linux-${arch}.tgz
+    done
+fi
