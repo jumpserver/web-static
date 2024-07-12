@@ -23,6 +23,10 @@ jobs:
         applets_version=$(curl -s https://api.github.com/repos/jumpserver/applets/releases/latest | grep "tag_name" | awk '{print $2}' | sed 's/"//g' | sed 's/,//g')
         wget -qO opt/download/applets/pip_packages.zip https://github.com/jumpserver/applets/releases/download/${applets_version}/pip_packages.zip
   
+    - name: Get binaries
+      run: |
+        bash tools.sh
+
     - name: Build and push
       uses: docker/build-push-action@v3
       with:
