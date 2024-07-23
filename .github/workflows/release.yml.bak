@@ -1,8 +1,8 @@
 on:
-
   push:
-    branches:
-      - master
+    paths:
+      - 'prepare.sh'
+      - 'Dockerfile'
 
 name: Checkout and Create Release Version
 
@@ -28,13 +28,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Login to FIT2CLOUD Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: registry.fit2cloud.com
-          username: ${{ secrets.FIT2CLOUD_USERNAME }}
-          password: ${{ secrets.FIT2CLOUD_TOKEN }}
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
