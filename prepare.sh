@@ -34,14 +34,15 @@ wget ${DOWNLOAD_URL}/public/Tinker_Installer_${TINKER_VERSION}.exe
 mkdir -p ${DOWNLOAD_DIR}/public
 cd ${DOWNLOAD_DIR}/public || exit 1
 wget ${DOWNLOAD_URL}/public/Microsoft_Remote_Desktop_${MRD_VERSION}_installer.pkg
-wget https://github.com/jumpserver/VideoPlayer/releases/download/v0.1.9/JumpServer.Video.Player-${VIDEO_PLAYER_VERSION}.dmg
-wget https://github.com/jumpserver/VideoPlayer/releases/download/v0.1.9/JumpServer.Video.Player.Setup.${VIDEO_PLAYER_VERSION}.exe
+wget https://github.com/jumpserver/VideoPlayer/releases/download/${VIDEO_PLAYER_VERSION}/JumpServer.Video.Player-${VIDEO_PLAYER_VERSION}.dmg
+wget https://github.com/jumpserver/VideoPlayer/releases/download/${VIDEO_PLAYER_VERSION}/JumpServer.Video.Player.Setup.${VIDEO_PLAYER_VERSION}.exe
+
 wget https://github.com/PowerShell/Win32-OpenSSH/releases/download/${OPENSSH_VERSION}p1-Beta/OpenSSH-Win64-${OPENSSH_VERSION}.msi
 
-clients=("win-${Client_VERSION}-x64.exe" "mac-${Client_VERSION}-x64.dmg" "mac-${Client_VERSION}-arm64.dmg"
-         "linux-${Client_VERSION}-amd64.deb" "linux-${Client_VERSION}-arm64.deb")
+clients=("win-${CLIENT_VERSION}-x64.exe" "mac-${CLIENT_VERSION}-x64.dmg" "mac-${CLIENT_VERSION}-arm64.dmg"
+         "linux-${CLIENT_VERSION}-amd64.deb" "linux-${CLIENT_VERSION}-arm64.deb")
 for client in "${clients[@]}"; do
-    wget "https://github.com/jumpserver/clients/releases/download/${Client_VERSION}/JumpServer-Client-Installer-${client}"
+    wget "https://github.com/jumpserver/clients/releases/download/${CLIENT_VERSION}/JumpServer-Client-Installer-${client}"
 done
 
 for arch in x64 arm64; do
