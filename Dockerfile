@@ -19,6 +19,15 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     && apt-get clean all \
     && echo "no" | dpkg-reconfigure dash
 
+ARG CHECK_VERSION=v1.0.2
+RUN set -ex \
+    && wget https://github.com/jumpserver-dev/healthcheck/releases/download/${CHECK_VERSION}/check-${CHECK_VERSION}-linux-${TARGETARCH}.tar.gz \
+    && tar -xf check-${CHECK_VERSION}-linux-${TARGETARCH}.tar.gz \
+    && mv check /usr/local/bin/ \
+    && chown root:root /usr/local/bin/check \
+    && chmod 755 /usr/local/bin/check \
+    && rm -f check-${CHECK_VERSION}-linux-${TARGETARCH}.tar.gz
+
 WORKDIR /opt/applets
 
 COPY requirements.txt ./requirements.txt
@@ -44,3 +53,4 @@ RUN set -ex \
     && bash ./prepare.sh
 
 COPY --from=stage-build /opt/applets/build /opt/applets
+COPY --from=stage-build /usr/local/bin/check /usr/local/bin/check
