@@ -11,17 +11,13 @@ PROJECT_DIR=$(cd `dirname $0`; pwd)
 
 DOWNLOAD_URL=https://download.jumpserver.org
 
-if [ -d "/opt/lina" ] && [ -d "/opt/luna" ]; then
-    PROJECT_DIR=/
-fi
-
-mkdir -p ${PROJECT_DIR}/opt/player
-cd ${PROJECT_DIR}/opt/player || exit 1
+mkdir -p /opt/player
+cd /opt/player || exit 1
 wget ${DOWNLOAD_URL}/public/glyptodon-enterprise-player-${PLAY_VERSION}.tar.gz
 tar -xf glyptodon-enterprise-player-${PLAY_VERSION}.tar.gz -C ${PROJECT_DIR}/opt/player --strip-components 1
 rm -f glyptodon-enterprise-player-${PLAY_VERSION}.tar.gz
 
-DOWNLOAD_DIR=${PROJECT_DIR}/opt/download
+DOWNLOAD_DIR=/opt/download
 mkdir -p ${DOWNLOAD_DIR}/applets
 cd ${DOWNLOAD_DIR}/applets || exit 1
 wget -O chromedriver-${CHROME_DRIVER_VERSION}-win64.zip https://github.com/jumpserver-dev/Chrome-Portable-Win64/releases/download/${CHROME_DRIVER_VERSION}/chromedriver-win64.zip

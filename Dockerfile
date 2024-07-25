@@ -47,10 +47,11 @@ RUN set -ex \
 
 FROM alpine:3.20
 
+WORKDIR /tmp
 COPY . .
 RUN set -ex \
     && apk add --no-cache bash \
     && bash ./prepare.sh
 
-COPY --from=stage-build /opt/applets/build /opt/applets
+COPY --from=stage-build /opt/applets/build /opt/download/applets
 COPY --from=stage-build /usr/local/bin/check /usr/local/bin/check
