@@ -59,9 +59,10 @@ jobs:
           git clone https://github.com/jumpserver/docker-web.git
           cd docker-web
           git checkout -b ${{ env.current_branch }}
-          sed -i 's|jumpserver/web-static:.* |jumpserver/web-static:${{ env.IMAGE_TAG }} |' Dockerfile-ee
-          git add Dockerfile-ee
-          git commit -m "perf: Update Dockerfile-ee web static version"
+          sed -i 's|jumpserver/web-static:\w+ |jumpserver/web-static:${{ env.IMAGE_TAG }} |' Dockerfile-ee
+          sed -i 's|jumpserver/web-static:\w+ |jumpserver/web-static:${{ env.IMAGE_TAG }} |' Dockerfile
+          git add Dockerfile-ee Dockerfile
+          git commit -m "perf: Update web static version"
 
       - name: Push changes
         run: |
