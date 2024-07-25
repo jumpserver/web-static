@@ -14,7 +14,7 @@ DOWNLOAD_URL=https://download.jumpserver.org
 mkdir -p /opt/player
 cd /opt/player || exit 1
 wget ${DOWNLOAD_URL}/public/glyptodon-enterprise-player-${PLAY_VERSION}.tar.gz
-tar -xf glyptodon-enterprise-player-${PLAY_VERSION}.tar.gz -C ${PROJECT_DIR}/opt/player --strip-components 1
+tar -xf glyptodon-enterprise-player-${PLAY_VERSION}.tar.gz -C /opt/player --strip-components 1
 rm -f glyptodon-enterprise-player-${PLAY_VERSION}.tar.gz
 
 DOWNLOAD_DIR=/opt/download
